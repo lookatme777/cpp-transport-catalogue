@@ -3,7 +3,7 @@
 #include <iostream>
 /*stat_reader.h, stat_reader.cpp — чтение запросов на вывод и сам вывод;*/
 namespace out {
-	void Transport(infocatalogueclass::TransportCatalogue& catalogue);
-	void Bus(infocatalogueclass::TransportCatalogue&, std::string);
-	void Stop(infocatalogueclass::TransportCatalogue&, std::string);
+	void Transport(infocatalogueclass::TransportCatalogue&, std::istream&);
+	void Bus(infocatalogueclass::TransportCatalogue&, const std::string&, std::ostream&);
+	void Stop(infocatalogueclass::TransportCatalogue&, const std::string&, std::ostream&);
 }
