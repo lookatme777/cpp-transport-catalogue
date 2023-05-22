@@ -2,7 +2,7 @@
 
 #include <iomanip>
 
-void out::Transport(infocatalogueclass::TransportCatalogue& catalogue) {
+void out::Transport(infocatalogueclass::TransportCatalogue& catalogue, std::istream& in) {
     size_t count;
     std::cin >> count;
     for (size_t i = 0; i < count; ++i) {
@@ -10,43 +10,43 @@ void out::Transport(infocatalogueclass::TransportCatalogue& catalogue) {
         std::cin >> keyword;
         std::getline(std::cin, inf);
         if (keyword == "Bus") {
-            out::Bus(catalogue, inf);
+            out::Bus(catalogue, inf, std::cout);
         }
         if (keyword == "Stop") {
-            out::Stop(catalogue, inf);
+            out::Stop(catalogue, inf, std::cout);
         }
     }
 }
 
-void out::Bus(infocatalogueclass::TransportCatalogue& ctlg, std::string inf) {
+void out::Bus(infocatalogueclass::TransportCatalogue& ctlg, const std::string& inf, std::ostream& out) {
     std::string number = inf.substr(1, inf.npos);
     if (ctlg.FindBusRoute(number)) {
-        std::cout << "Bus " << number << ": " << ctlg.BusRouteInformation(number).stops_count << " stops on route, "
+        out << "Bus " << number << ": " << ctlg.BusRouteInformation(number).stops_count << " stops on route, "
             << ctlg.BusRouteInformation(number).unique_stops_count << " unique stops, " << ctlg.BusRouteInformation(number).route_length << " route length, " << ctlg.BusRouteInformation(number).curvature << " curvature\n";
     }
     else {
-        std::cout << "Bus " << number << ": not found\n";
+        out << "Bus " << number << ": not found\n";
     }
 }
 
 
-void out::Stop(infocatalogueclass::TransportCatalogue& ctlg, std::string inf) {
+void out::Stop(infocatalogueclass::TransportCatalogue& ctlg, const std::string& inf, std::ostream& out) {
     std::string stop_name = inf.substr(1, inf.npos);
     if (ctlg.FindBusStop(stop_name)) {
-        std::cout << "Stop " << stop_name << ": ";
+        out << "Stop " << stop_name << ": ";
         std::set<std::string> buses = ctlg.BusToStop(stop_name);
         if (!buses.empty()) {
-            std::cout << "buses ";
+            out << "buses ";
             for (const auto& bus : buses) {
                 std::cout << bus << " ";
             }
-            std::cout << "\n";
+            out << "\n";
         }
         else {
-            std::cout << "no buses\n";
+            out << "no buses\n";
         }
     }
     else {
-        std::cout << "Stop " << stop_name << ": not found\n";
+        out << "Stop " << stop_name << ": not found\n";
     }
 }
