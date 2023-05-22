@@ -4,18 +4,18 @@
 #include <vector>
 #include <cmath>
 
-void fill::TransportCatalogue(infocatalogueclass::TransportCatalogue& ctlg) {
+void fill::TransportCatalogue(std::istream& in, infocatalogueclass::TransportCatalogue& ctlg) {
     size_t count;
 
     std::vector<std::string> buses_;
     std::vector<std::string> stops_;
     std::vector<std::string> stop_distances_;
 
-    std::cin >> count;
+    in >> count;
     for (size_t i = 0; i < count; ++i) {
         std::string keyword, inf;
-        std::cin >> keyword;
-        std::getline(std::cin, inf);
+        in >> keyword;
+        std::getline(in, inf);
         if (keyword == "Stop") {
             stops_.push_back(inf);
         }
@@ -41,7 +41,7 @@ void fill::TransportCatalogue(infocatalogueclass::TransportCatalogue& ctlg) {
 infostruct::Stop fill::ParseStop(std::string& inf) {
     infostruct::Stop stop;
     std::string stop_name = inf.substr(1, inf.find_first_of(':') - inf.find_first_of(' ') - 1);
-    
+
     double latitude = std::stod(inf.substr(inf.find_first_of(':') + 2, inf.find_first_of(',') - 1));
     double longitude;
     inf.erase(0, inf.find_first_of(',') + 2);
