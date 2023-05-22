@@ -1,15 +1,15 @@
 #include "transport_catalogue.h"
 
-void infocatalogueclass::TransportCatalogue::AddBusRoute(infostruct::Bus& businfo) {
+void infocatalogueclass::TransportCatalogue::AddBusRoute(const infostruct::Bus& businfo) {
     buses_.push_back(businfo);
     finderbus_[buses_.back().number] = &buses_.back();
-    
+
     for (const auto& inf : buses_.back().stops) {
         bustoforstop_[inf].insert(businfo.number);
     }
 }
 
-void infocatalogueclass::TransportCatalogue::AddBusStop(infostruct::Stop& stopinfo) {
+void infocatalogueclass::TransportCatalogue::AddBusStop(const infostruct::Stop& stopinfo) {
     stops_.push_back(stopinfo);
     finderstop_[stops_.back().name] = &stops_.back();
 }
