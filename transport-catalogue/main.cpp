@@ -4,6 +4,6 @@
 // main.cpp — точка входа.
 int main() {
     infocatalogueclass::TransportCatalogue catalogue;
-    fill::TransportCatalogue(catalogue);
-    out::Transport(catalogue);
+    fill::TransportCatalogue(std::cin, catalogue);
+    out::Transport(catalogue, std::cin);
 }
