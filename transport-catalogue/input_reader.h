@@ -9,7 +9,7 @@
 
 namespace fill {
 
-	void TransportCatalogue(infocatalogueclass::TransportCatalogue&);
+	void TransportCatalogue(std::istream& in, infocatalogueclass::TransportCatalogue&);
 	infostruct::Bus ParseBus(std::string&);
 	infostruct::Stop ParseStop(std::string&);
 	void AddStopDistances(std::string&, infocatalogueclass::TransportCatalogue&);
