@@ -39,8 +39,8 @@ namespace infostruct {
 namespace infocatalogueclass {
     class TransportCatalogue {
     public:
-        void AddBusRoute(infostruct::Bus&);
-        void AddBusStop(infostruct::Stop&);
+        void AddBusRoute(const infostruct::Bus&);
+        void AddBusStop(const infostruct::Stop&);
         const infostruct::Bus* FindBusRoute(const std::string&) const;
         infostruct::Stop* FindBusStop(const std::string&) const;
         const infostruct::RouteInfo BusRouteInformation(const std::string&) const;
