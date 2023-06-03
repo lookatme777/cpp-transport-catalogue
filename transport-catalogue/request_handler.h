@@ -3,6 +3,7 @@
 #include "json.h"
 #include "transport_catalogue.h"
 #include "map_renderer.h"
+#include "json_reader.h"
 
 #include <sstream>
 
@@ -13,8 +14,13 @@ public:
 
     std::optional<domain::RouteInforamtion> GetBusStat(const std::string_view) const;
     const std::set<std::string> GetBusesByStop(std::string_view) const;
-    bool BusNumberGet(const std::string_view) const;
-    bool StopNameGet(const std::string_view) const;
+    bool GetBusNumber(const std::string_view) const;
+    bool GetStopName(const std::string_view) const;
+
+    void ProcessRequests(const json::Node& stat_requests, RequestHandler& rh) const;
+    const json::Node PrintStop(const json::Dict&, RequestHandler&) const;
+    const json::Node PrintRoute(const json::Dict&, RequestHandler&) const;
+    const json::Node PrintMap(const json::Dict&, RequestHandler&) const;
 
     svg::Document RenderMap() const;
 
