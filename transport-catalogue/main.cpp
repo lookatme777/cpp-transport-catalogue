@@ -3,7 +3,7 @@
 
 int main() {
     infocatalogue::TransportCatalogue catalogue;
-    jReader json_doc(std::cin);
+    JSONReader json_doc(std::cin);
 
     json_doc.FillCatalogue(catalogue);
 
@@ -12,5 +12,5 @@ int main() {
     const auto& renderer = json_doc.FillRenderSettings(render_settings);
 
     RequestHandler rh(catalogue, renderer);
-    json_doc.ProcessRequests(stat_requests, rh);
+    rh.ProcessRequests(stat_requests);
 }
