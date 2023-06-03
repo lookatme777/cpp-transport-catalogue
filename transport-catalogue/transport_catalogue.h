@@ -1,59 +1,39 @@
 #pragma once
 
 #include "geo.h"
+#include "domain.h"
 
+#include <iostream>
 #include <deque>
 #include <string>
-#include <iostream>
 #include <unordered_map>
 #include <vector>
 #include <stdexcept>
+#include <optional>
+#include <unordered_set>
 #include <set>
 #include <map>
-#include <functional>
-#include <unordered_set>
-
-namespace infostruct {
-    struct Bus {
-        std::string number;
-        std::vector<std::string> stops;
-        bool circular_route;
-    };
 
 
-    struct Stop {
-        std::string name;
-        coordinate::Coordinates coordinates;
-        std::unordered_map<std::string, int> stop_distances;
-    };
-
-    struct RouteInfo {
-        size_t stops_count;
-        size_t unique_stops_count;
-        double route_length;
-        double curvature;
-    };
-}
-
-
-namespace infocatalogueclass {
+namespace infocatalogue{
     class TransportCatalogue {
     public:
-        void AddBusRoute(const infostruct::Bus&);
-        void AddBusStop(const infostruct::Stop&);
-        const infostruct::Bus* FindBusRoute(const std::string&) const;
-        infostruct::Stop* FindBusStop(const std::string&) const;
-        const infostruct::RouteInfo BusRouteInformation(const std::string&) const;
-        size_t UniqueStopsCount(const std::string&) const;
-        std::set<std::string>BusToStop(const std::string&) const;
-        void SetStopDistance(infostruct::Stop*, infostruct::Stop*, int);
-        int GetStopDistance(const infostruct::Stop*, const infostruct::Stop*) const;
+        void AddBusRoute(std::string_view, const std::vector<const domain::Stop*>, bool);
+        void AddBusStop(std::string_view, const geo::Coordinates);
+        const domain::Bus* FindBusRoute(std::string_view) const;
+        const domain::Stop* FindBusStop(std::string_view) const;
+        size_t UniqueStopsCount(std::string_view) const;
+        void SetStopDistance(const domain::Stop*, const domain::Stop*, const int);
+        int GetStopDistance(const domain::Stop*, const domain::Stop*) const;
+        const std::map<std::string_view, const domain::Bus*> GetSortedBuses() const;
 
     private:
-        std::deque<infostruct::Bus> buses_;
-        std::deque<infostruct::Stop> stops_;
-        std::unordered_map<std::string_view, const infostruct::Bus*> finderbus_;
-        std::unordered_map<std::string_view, infostruct::Stop*> finderstop_;
-        std::unordered_map<std::string, std::set<std::string>> bustoforstop_;
+        std::deque<domain::Bus> buses_;
+        std::deque<domain::Stop> stops_;
+        std::unordered_map<std::string_view, const domain::Bus*> finderbus_;
+        std::unordered_map<std::string_view, const domain::Stop*> finderstop_;
+        std::unordered_map<std::pair<const domain::Stop*, const domain::Stop*>, int, domain::Hasher> stop_distances_;
     };
 }
+
+
