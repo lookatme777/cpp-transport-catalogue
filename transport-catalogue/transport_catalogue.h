@@ -18,7 +18,7 @@
 namespace infocatalogue{
     class TransportCatalogue {
     public:
-        void AddBusRoute(std::string_view, const std::vector<const domain::Stop*>, bool);
+        void AddBusRoute(std::string_view, const std::vector<const domain::Stop*>&, bool);
         void AddBusStop(std::string_view, const geo::Coordinates);
         const domain::Bus* FindBusRoute(std::string_view) const;
         const domain::Stop* FindBusStop(std::string_view) const;
