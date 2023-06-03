@@ -13,8 +13,8 @@ public:
 
     std::optional<domain::RouteInforamtion> GetBusStat(const std::string_view) const;
     const std::set<std::string> GetBusesByStop(std::string_view) const;
-    bool BusNumber(const std::string_view) const;
-    bool StopName(const std::string_view) const;
+    bool BusNumberGet(const std::string_view) const;
+    bool StopNameGet(const std::string_view) const;
 
     svg::Document RenderMap() const;
 
