@@ -6,8 +6,8 @@ void TransportCatalogue::AddBusStop(std::string_view stop_name, const geo::Coord
     finderstop_[stops_.back().name] = &stops_.back();
 }
 
-void TransportCatalogue::AddBusRoute(std::string_view bus_number, const std::vector<const domain::Stop*>& stops, bool is_circle) {
-    buses_.push_back({ std::string(bus_number), stops, is_circle });
+void TransportCatalogue::AddBusRoute(std::string_view bus_number, const std::vector<const domain::Stop*>& stops, bool circle) {
+    buses_.push_back({ std::string(bus_number), stops, circle });
     finderbus_[buses_.back().number] = &buses_.back();
     for (const auto& route_stop : stops) {
         for (auto& stop_ : stops_) {
