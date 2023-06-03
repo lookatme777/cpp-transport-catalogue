@@ -39,11 +39,11 @@ const std::set<std::string> RequestHandler::GetBusesByStop(std::string_view stop
     return catalogue_.FindBusStop(stop_name)->buses_by_stop;
 }
 
-bool RequestHandler::BusNumber(const std::string_view bus_number) const {
+bool RequestHandler::BusNumberGet(const std::string_view bus_number) const {
     return catalogue_.FindBusRoute(bus_number);
 }
 
-bool RequestHandler::StopName(const std::string_view stop_name) const {
+bool RequestHandler::StopNameGet(const std::string_view stop_name) const {
     return catalogue_.FindBusStop(stop_name);
 }
 
