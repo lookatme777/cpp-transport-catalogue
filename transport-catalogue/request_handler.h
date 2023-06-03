@@ -18,9 +18,9 @@ public:
     bool IsStopName(const std::string_view) const;
 
     void ProcessRequests(const json::Node& stat_requests) const;
-    const json::Node PrintStop(const json::Dict&, RequestHandler&) const;
-    const json::Node PrintRoute(const json::Dict&, RequestHandler&) const;
-    const json::Node PrintMap(const json::Dict&, RequestHandler&) const;
+    const json::Node PrintStop(const json::Dict&) const;
+    const json::Node PrintRoute(const json::Dict&) const;
+    const json::Node PrintMap(const json::Dict&) const;
 
     svg::Document RenderMap() const;
 
