@@ -18,13 +18,13 @@
 namespace infocatalogue{
     class TransportCatalogue {
     public:
-        void AddBusRoute(std::string_view, const std::vector<const domain::Stop*>&, bool);
-        void AddBusStop(std::string_view, const geo::Coordinates);
-        const domain::Bus* FindBusRoute(std::string_view) const;
-        const domain::Stop* FindBusStop(std::string_view) const;
-        size_t UniqueStopsCount(std::string_view) const;
-        void SetStopDistance(const domain::Stop*, const domain::Stop*, const int);
-        int GetStopDistance(const domain::Stop*, const domain::Stop*) const;
+        void AddBusRoute(std::string_view bus_number, const std::vector<const domain::Stop*>& stops, bool circle);
+        void AddBusStop(std::string_view stop_name, const geo::Coordinates coordinates);
+        const domain::Bus* FindBusRoute(std::string_view bus_number) const;
+        const domain::Stop* FindBusStop(std::string_view stop_name) const;
+        size_t UniqueStopsCount(std::string_view bus_number) const;
+        void SetStopDistance(const domain::Stop* from, const domain::Stop* to, const int distance);
+        int GetStopDistance(const domain::Stop* from, const domain::Stop* to) const;
         const std::map<std::string_view, const domain::Bus*> GetSortedBuses() const;
 
     private:
