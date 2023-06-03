@@ -14,8 +14,8 @@ public:
 
     std::optional<domain::RouteInforamtion> GetBusStat(const std::string_view) const;
     const std::set<std::string> GetBusesByStop(std::string_view) const;
-    bool GetBusNumber(const std::string_view) const;
-    bool GetStopName(const std::string_view) const;
+    bool IsBusNumber(const std::string_view) const;
+    bool IsStopName(const std::string_view) const;
 
     void ProcessRequests(const json::Node& stat_requests) const;
     const json::Node PrintStop(const json::Dict&, RequestHandler&) const;
