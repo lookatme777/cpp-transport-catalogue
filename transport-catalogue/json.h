@@ -34,8 +34,8 @@ namespace json {
 
 
         bool IsInt() const;
-        bool IsDouble() const;              
-        bool IsPureDouble() const;          
+        bool IsDouble() const;
+        bool IsPureDouble() const;
         bool IsBool() const;
         bool IsString() const;
         bool IsNull() const;
