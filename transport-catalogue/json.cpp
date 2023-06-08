@@ -414,6 +414,7 @@ namespace json {
         PrintString(value, context.out);
     }
 
+
     void PrintValue(const std::nullptr_t&, const PrintContext& context) {
         context.out << "null"s;
     }
@@ -445,6 +446,7 @@ namespace json {
         out.put(']');
     }
 
+
     void PrintValue(Dict nodes, const PrintContext& context) {
         std::ostream& out = context.out;
         out << "{\n"sv;
@@ -474,6 +476,10 @@ namespace json {
         std::visit([&context](const auto& value) {
             PrintValue(value, context);
             }, node.GetValue());
+    }
+
+    void PrintNode(const Node& node, const PrintContext& context)
+    {
     }
 
     void Print(const Document& document, std::ostream& output) {
