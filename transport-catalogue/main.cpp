@@ -1,5 +1,3 @@
-
-//++
 #include "json_reader.h"
 #include "request_handler.h"
 
