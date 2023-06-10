@@ -138,13 +138,13 @@ namespace renderer {
 
         for (const auto& line : RouteLines(buses, sp)) {
             result.Add(line);
-        } 
+        }
         for (const auto& text : BusLabel(buses, sp)) {
             result.Add(text);
-        } 
+        }
         for (const auto& circle : StopsSymbols(all_stops, sp)) {
             result.Add(circle);
-        } 
+        }
         for (const auto& text : StopsLabels(all_stops, sp)) {
             result.Add(text);
         }
@@ -152,4 +152,4 @@ namespace renderer {
         return result;
     }
 
-} 
+}
