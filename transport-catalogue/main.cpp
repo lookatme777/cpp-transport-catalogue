@@ -1,15 +1,18 @@
+
+//++
 #include "json_reader.h"
 #include "request_handler.h"
 
 int main() {
+
     infocatalogue::TransportCatalogue catalogue;
-    JSONReader json_doc(std::cin);
+    JSONReader doc(std::cin);
 
     json_doc.FillCatalogue(catalogue);
 
-    const auto& stat_requests = json_doc.StatRequests();
-    const auto& render_settings = json_doc.RenderSettings().AsMap();
-    const auto& renderer = json_doc.FillRenderSettings(render_settings);
+    const auto& stat_requests = doc.StatRequests();
+    const auto& render_settings = doc.RenderSettings().AsMap();
+    const auto& renderer = doc.FillRenderSettings(render_settings);
 
     RequestHandler rh(catalogue, renderer);
     rh.ProcessRequests(stat_requests);
