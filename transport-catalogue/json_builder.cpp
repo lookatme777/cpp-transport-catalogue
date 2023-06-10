@@ -1,4 +1,3 @@
-//+++
 
 #include "json_builder.h"
 /*BUILDER*/
