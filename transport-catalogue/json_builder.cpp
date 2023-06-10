@@ -1,5 +1,6 @@
-#include "json_builder.h"
+//+++
 
+#include "json_builder.h"
 /*BUILDER*/
 json::Node json::Builder::MNode(Node::Value value_) {
     if (std::holds_alternative<bool>(value_)) {
@@ -48,8 +49,8 @@ void json::Builder::AddNode(Node node) {
         else if (nodes_stack_.back()->IsString()) {
             std::string str = nodes_stack_.back()->AsString();
             nodes_stack_.pop_back();
-            if (nodes_stack_.back()->IsDict()) {
-                Dict dictionary = nodes_stack_.back()->AsDict();
+            if (nodes_stack_.back()->IsMap()) {
+                Dict dictionary = nodes_stack_.back()->AsMap();
                 dictionary.emplace(std::move(str), node);
                 nodes_stack_.pop_back();
                 auto dictionary_ptr = std::make_unique<Node>(dictionary);
@@ -65,7 +66,7 @@ json::KeyItem json::Builder::Key(const std::string key) {
     }
 
     Node keyNode(key);
-    if (!nodes_stack_.back()->IsDict()) {
+    if (!nodes_stack_.back()->IsMap()) {
         throw std::logic_error("unable to create key: current node is not a dictionary");
     }
 
@@ -99,7 +100,7 @@ json::Builder& json::Builder::EndDict() {
 
     Node topNode = *nodes_stack_.back();
 
-    if (!topNode.IsDict()) {
+    if (!topNode.IsMap()) {
         throw std::logic_error("Unable to close dictionary: top node is not a dictionary");
     }
 
@@ -183,6 +184,5 @@ json::ArrayItem json::ArrayItem::Value(Node::Value value) {
     return MainBuild::Value(move(value));
 }
 /*ARRAYITEM*/
-
 
 
