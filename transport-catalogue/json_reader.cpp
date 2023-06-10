@@ -21,8 +21,6 @@ const json::Node& JSONReader::RenderSettings() const {
     return input_.GetRoot().AsMap().at("render_settings");
 }
 
-
-
 void JSONReader::FillCatalogue(infocatalogue::TransportCatalogue& catalogue) {
     const json::Array& arr = BaseRequests().AsArray();
     for (auto& request_stops : arr) {
@@ -72,7 +70,7 @@ void JSONReader::FillStopDistances(infocatalogue::TransportCatalogue& catalogue)
     }
 }
 
-std::tuple<std::string_view, std::vector<const domain::Stop*>, bool> JSONReader::FillRoute(const json::Dict& request_map, infocatalogue::TransportCatalogue& catalogue) const{
+std::tuple<std::string_view, std::vector<const domain::Stop*>, bool> JSONReader::FillRoute(const json::Dict& request_map, infocatalogue::TransportCatalogue& catalogue) const {
     std::string_view bus_number = request_map.at("name").AsString();
     std::vector<const domain::Stop*> stops;
     for (auto& stop : request_map.at("stops").AsArray()) {
@@ -130,4 +128,3 @@ renderer::MapRenderer JSONReader::FillRenderSettings(const json::Dict& request_)
 
     return render_settings;
 }
-
