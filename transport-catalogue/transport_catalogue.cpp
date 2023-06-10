@@ -28,7 +28,7 @@ const domain::Stop* TransportCatalogue::FindBusStop(std::string_view stop_name) 
     if (finderstop_.count(stop_name)) {
         return finderstop_.at(stop_name);
     }
-    else 
+    else
         return nullptr;
 }
 
@@ -47,7 +47,7 @@ void TransportCatalogue::SetStopDistance(const domain::Stop* from, const domain:
 int TransportCatalogue::GetStopDistance(const domain::Stop* from, const domain::Stop* to) const {
     if (stop_distances_.count({ from, to })) {
         return stop_distances_.at({ from, to });
-    } 
+    }
     else if (stop_distances_.count({ to, from })) {
         return stop_distances_.at({ to, from });
     }
