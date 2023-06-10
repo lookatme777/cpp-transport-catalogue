@@ -15,7 +15,7 @@
 #include <map>
 
 
-namespace infocatalogue{
+namespace infocatalogue {
     class TransportCatalogue {
     public:
         void AddBusRoute(std::string_view bus_number, const std::vector<const domain::Stop*>& stops, bool circle);
@@ -35,5 +35,4 @@ namespace infocatalogue{
         std::unordered_map<std::pair<const domain::Stop*, const domain::Stop*>, int, domain::Hasher> stop_distances_;
     };
 }
-
 
