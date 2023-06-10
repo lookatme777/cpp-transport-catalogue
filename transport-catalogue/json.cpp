@@ -478,10 +478,6 @@ namespace json {
             }, node.GetValue());
     }
 
-    void PrintNode(const Node& node, const PrintContext& context)
-    {
-    }
-
     void Print(const Document& document, std::ostream& output) {
         PrintNode(document.GetRoot(), PrintContext{ output });
     }
