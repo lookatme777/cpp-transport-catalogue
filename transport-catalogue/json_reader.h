@@ -9,13 +9,13 @@
 
 class JSONReader {
 public:
-    JSONReader(std::istream& input): input_(json::Load(input)){
+    JSONReader(std::istream& input) : input_(json::Load(input)) {
     }
 
     const json::Node& RenderSettings() const;
     const json::Node& BaseRequests() const;
     const json::Node& StatRequests() const;
-   
+
     void FillCatalogue(infocatalogue::TransportCatalogue&);
     renderer::MapRenderer FillRenderSettings(const json::Dict& request_map) const;
 
