@@ -26,6 +26,7 @@ namespace infocatalogue {
         void SetStopDistance(const domain::Stop* from, const domain::Stop* to, const int distance);
         int GetStopDistance(const domain::Stop* from, const domain::Stop* to) const;
         const std::map<std::string_view, const domain::Bus*> GetSortedBuses() const;
+        const std::map<std::string_view, const domain::Stop*> GetSortedStops() const;
 
     private:
         std::deque<domain::Bus> buses_;
@@ -33,6 +34,7 @@ namespace infocatalogue {
         std::unordered_map<std::string_view, const domain::Bus*> finderbus_;
         std::unordered_map<std::string_view, const domain::Stop*> finderstop_;
         std::unordered_map<std::pair<const domain::Stop*, const domain::Stop*>, int, domain::Hasher> stop_distances_;
+
     };
 }
 
