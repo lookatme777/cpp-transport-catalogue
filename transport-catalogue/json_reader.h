@@ -3,6 +3,7 @@
 #include "json.h"
 #include "transport_catalogue.h"
 #include "map_renderer.h"
+#include "transport_router.h"
 #include "request_handler.h"
 
 #include <iostream>
@@ -15,9 +16,11 @@ public:
     const json::Node& RenderSettings() const;
     const json::Node& BaseRequests() const;
     const json::Node& StatRequests() const;
+    const json::Node& RoutingSettings() const;
 
     void FillCatalogue(infocatalogue::TransportCatalogue&);
-    renderer::MapRenderer FillRenderSettings(const json::Dict& request_map) const;
+    renderer::MapRenderer FillRenderSettings(const json::Node& settings) const;
+    transport_router::Router FillRoutingSettings(const json::Node& settings) const;
 
 
 private:
