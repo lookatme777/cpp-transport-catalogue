@@ -48,6 +48,14 @@ bool RequestHandler::IsStopName(const std::string_view stop_name) const {
     return catalogue_.FindBusStop(stop_name);
 }
 
+const std::optional<graph::Router<double>::RouteInfo> RequestHandler::GetOptimalRoute(const std::string_view stop_from, const std::string_view stop_to) const{
+    return router_.FindRoute(stop_from, stop_to);
+}
+
+const graph::DirectedWeightedGraph<double>& RequestHandler::GetRouterGraph() const{
+    return router_.GetGraph();
+}
+
 svg::Document RequestHandler::RenderMap() const {
     return renderer_.SVG(catalogue_.GetSortedBuses());
 }
@@ -60,6 +68,7 @@ void RequestHandler::ProcessRequests(const json::Node& stat_requests) const {
         if (type == "Stop") result.push_back(PrintStop(request_map).AsMap());
         if (type == "Bus") result.push_back(PrintRoute(request_map).AsMap());
         if (type == "Map") result.push_back(PrintMap(request_map).AsMap());
+        if (type == "Route") result.push_back(PrintRouting(request_map).AsMap());
     }
 
     json::Print(json::Document{ result }, std::cout);
@@ -135,6 +144,64 @@ const json::Node RequestHandler::PrintMap(const json::Dict& request_map) const {
         .Key("map").Value(strm.str())
         .EndDict()
         .Build();
+
+    return result;
+}
+
+const json::Node RequestHandler::PrintRouting(const json::Dict& request_map) const{
+    json::Node result;
+    const int id = request_map.at("id").AsInt();
+    const std::string_view stop_from = request_map.at("from").AsString();
+    const std::string_view stop_to = request_map.at("to").AsString();
+    const auto& routing = GetOptimalRoute(stop_from, stop_to);
+
+    if (!routing) {
+        result = json::Builder{}
+            .StartDict()
+            .Key("request_id").Value(id)
+            .Key("error_message").Value("not found")
+            .EndDict()
+            .Build();
+    }
+    else {
+        json::Array items;
+        double total_time = 0.0;
+        items.reserve(routing.value().edges.size());
+        for (auto& edge_id : routing.value().edges) {
+            const graph::Edge<double> edge = GetRouterGraph().GetEdge(edge_id);
+            if (edge.quality == 0) {
+                items.emplace_back(json::Node(json::Builder{}
+                .StartDict()
+                    .Key("stop_name").Value(edge.name)
+                    .Key("time").Value(edge.weight)
+                    .Key("type").Value("Wait")
+                    .EndDict()
+                    .Build()));
+
+                total_time += edge.weight;
+            }
+            else {
+                items.emplace_back(json::Node(json::Builder{}
+                .StartDict()
+                    .Key("bus").Value(edge.name)
+                    .Key("span_count").Value(static_cast<int>(edge.quality))
+                    .Key("time").Value(edge.weight)
+                    .Key("type").Value("Bus")
+                    .EndDict()
+                    .Build()));
+
+                total_time += edge.weight;
+            }
+        }
+
+        result = json::Builder{}
+            .StartDict()
+            .Key("request_id").Value(id)
+            .Key("total_time").Value(total_time)
+            .Key("items").Value(items)
+            .EndDict()
+            .Build();
+    }
 
     return result;
 }
