@@ -62,3 +62,11 @@ const std::map<std::string_view, const domain::Bus*> TransportCatalogue::GetSort
     }
     return result;
 }
+
+const std::map<std::string_view, const domain::Stop*> TransportCatalogue::GetSortedStops() const{
+    std::map<std::string_view, const domain::Stop*> result;
+    for (const auto& stop : finderstop_) {
+        result.emplace(stop);
+    }
+    return result;
+}
