@@ -14,6 +14,13 @@ const json::Node& JSONReader::StatRequests() const {
     return input_.GetRoot().AsMap().at("stat_requests");
 }
 
+const json::Node& JSONReader::RoutingSettings() const{
+    if (!input_.GetRoot().AsMap().count("routing_settings")) {
+        return null_;
+    }
+    return input_.GetRoot().AsMap().at("routing_settings");
+}
+
 const json::Node& JSONReader::RenderSettings() const {
     if (!input_.GetRoot().AsMap().count("render_settings")) {
         return null_;
@@ -42,6 +49,8 @@ void JSONReader::FillCatalogue(infocatalogue::TransportCatalogue& catalogue) {
         }
     }
 }
+
+
 
 std::tuple<std::string_view, geo::Coordinates, std::map<std::string_view, int>> JSONReader::FillStop(const json::Dict& request_map) const {
     std::string_view stop_name = request_map.at("name").AsString();
@@ -81,36 +90,37 @@ std::tuple<std::string_view, std::vector<const domain::Stop*>, bool> JSONReader:
     return std::make_tuple(bus_number, stops, circular_route);
 }
 
-renderer::MapRenderer JSONReader::FillRenderSettings(const json::Dict& request_) const {
+renderer::MapRenderer JSONReader::FillRenderSettings(const json::Node& settings) const {
+    json::Dict request_map = settings.AsMap();
     renderer::RenderSettings render_settings;
-    render_settings.width = request_.at("width").AsDouble();
-    render_settings.height = request_.at("height").AsDouble();
-    render_settings.padding = request_.at("padding").AsDouble();
-    render_settings.stop_radius = request_.at("stop_radius").AsDouble();
-    render_settings.line_width = request_.at("line_width").AsDouble();
-    render_settings.bus_label_font_size = request_.at("bus_label_font_size").AsInt();
-    const json::Array& bus_label_offset = request_.at("bus_label_offset").AsArray();
+    render_settings.width = request_map.at("width").AsDouble();
+    render_settings.height = request_map.at("height").AsDouble();
+    render_settings.padding = request_map.at("padding").AsDouble();
+    render_settings.stop_radius = request_map.at("stop_radius").AsDouble();
+    render_settings.line_width = request_map.at("line_width").AsDouble();
+    render_settings.bus_label_font_size = request_map.at("bus_label_font_size").AsInt();
+    const json::Array& bus_label_offset = request_map.at("bus_label_offset").AsArray();
     render_settings.bus_label_offset = { bus_label_offset[0].AsDouble(), bus_label_offset[1].AsDouble() };
-    render_settings.stop_label_font_size = request_.at("stop_label_font_size").AsInt();
-    const json::Array& stop_label_offset = request_.at("stop_label_offset").AsArray();
+    render_settings.stop_label_font_size = request_map.at("stop_label_font_size").AsInt();
+    const json::Array& stop_label_offset = request_map.at("stop_label_offset").AsArray();
     render_settings.stop_label_offset = { stop_label_offset[0].AsDouble(), stop_label_offset[1].AsDouble() };
 
-    if (request_.at("underlayer_color").IsString()) render_settings.underlayer_color = request_.at("underlayer_color").AsString();
-    else if (request_.at("underlayer_color").IsArray()) {
-        const json::Array& underlayer_color = request_.at("underlayer_color").AsArray();
+    if (request_map.at("underlayer_color").IsString()) render_settings.underlayer_color = request_map.at("underlayer_color").AsString();
+    else if (request_map.at("underlayer_color").IsArray()) {
+        const json::Array& underlayer_color = request_map.at("underlayer_color").AsArray();
         if (underlayer_color.size() == 3) {
             render_settings.underlayer_color = svg::Rgb(underlayer_color[0].AsInt(), underlayer_color[1].AsInt(), underlayer_color[2].AsInt());
         }
         else if (underlayer_color.size() == 4) {
             render_settings.underlayer_color = svg::Rgba(underlayer_color[0].AsInt(), underlayer_color[1].AsInt(), underlayer_color[2].AsInt(), underlayer_color[3].AsDouble());
         }
-        else throw std::logic_error("error colortype");
+        else throw std::logic_error("wrong underlayer colortype");
     }
-    else throw std::logic_error("error color");
+    else throw std::logic_error("wrong underlayer color");
 
-    render_settings.underlayer_width = request_.at("underlayer_width").AsDouble();
+    render_settings.underlayer_width = request_map.at("underlayer_width").AsDouble();
 
-    const json::Array& color_palette = request_.at("color_palette").AsArray();
+    const json::Array& color_palette = request_map.at("color_palette").AsArray();
     for (const auto& color_element : color_palette) {
         if (color_element.IsString()) render_settings.color_palette.push_back(color_element.AsString());
         else if (color_element.IsArray()) {
@@ -121,10 +131,15 @@ renderer::MapRenderer JSONReader::FillRenderSettings(const json::Dict& request_)
             else if (color_type.size() == 4) {
                 render_settings.color_palette.push_back(svg::Rgba(color_type[0].AsInt(), color_type[1].AsInt(), color_type[2].AsInt(), color_type[3].AsDouble()));
             }
-            else throw std::logic_error("error type");
+            else throw std::logic_error("wrong color_palette type");
         }
-        else throw std::logic_error("error");
+        else throw std::logic_error("wrong color_palette");
     }
 
     return render_settings;
+}
+
+transport_router::Router JSONReader::FillRoutingSettings(const json::Node& settings) const{
+    transport_router::Router routing_settings;
+    return transport_router::Router{ settings.AsMap().at("bus_wait_time").AsInt(), settings.AsMap().at("bus_velocity").AsDouble() };
 }
