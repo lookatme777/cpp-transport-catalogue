@@ -27,4 +27,4 @@ namespace domain {
         Stop* final_stop = nullptr;
     };
 
-} //namespace domain
+}
