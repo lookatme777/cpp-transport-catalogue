@@ -1,13 +1,54 @@
 #pragma once
 
-#include "svg.h"
 #include "geo.h"
+#include "svg.h"
 #include "json.h"
 #include "domain.h"
 
+#include <vector>
+#include <string>
+#include <string_view>
+#include <stdexcept>
 #include <algorithm>
+#include <map>
+#include <optional>
 
 namespace renderer {
+
+    class SphereProjector;
+
+    class MapRenderer {
+    public:
+        MapRenderer() = default;
+
+        MapRenderer(const json::Node& render_settings);
+
+        std::vector<svg::Polyline> GetBusLines(const std::map<std::string_view, domain::Bus*>& buses, const SphereProjector& sp) const;
+
+        std::vector<svg::Text> GetBusLabels(const std::map<std::string_view, domain::Bus*>& buses, const SphereProjector& sp) const;
+
+        std::vector<svg::Text> GetStopLabels(const std::map<std::string_view, domain::Stop*>& stops, const SphereProjector& sp) const;
+
+        std::vector<svg::Circle> GetStopCircles(const std::map<std::string_view, domain::Stop*>& stops, const SphereProjector& sp) const;
+
+        svg::Document GetSvgDocument(const std::map<std::string_view, domain::Bus*>& buses) const;
+
+        json::Node GetRenderSettings() const;
+
+    private:
+        double width_ = 0;
+        double height_ = 0;
+        double padding_ = 0;
+        double stop_radius_ = 0;
+        double line_width_ = 0;
+        int bus_label_font_size_ = 0;
+        svg::Point bus_label_offset_ = { 0.0, 0.0 };
+        svg::Point stop_label_offset_ = { 0.0, 0.0 };
+        int stop_label_font_size_ = 0;
+        svg::Color underlayer_color_;
+        double underlayer_width_ = 0;
+        std::vector<svg::Color> color_palette_ = {};
+    };
 
     inline const double EPSILON = 1e-6;
     bool IsZero(double value);
@@ -15,23 +56,24 @@ namespace renderer {
     class SphereProjector {
     public:
         template <typename PointInputIt>
-        SphereProjector(PointInputIt points_begin, PointInputIt points_end,
-            double max_width, double max_height, double padding)
-            : padding_(padding)
-        {
+        SphereProjector(PointInputIt points_begin, PointInputIt points_end, double max_width,
+            double max_height, double padding)
+            : padding_(padding) {
             if (points_begin == points_end) {
                 return;
             }
 
-            const auto [left_it, right_it] = std::minmax_element(
-                points_begin, points_end,
-                [](auto lhs, auto rhs) { return lhs.lng < rhs.lng; });
+            const auto [left_it, right_it]
+                = std::minmax_element(points_begin, points_end, [](auto lhs, auto rhs) {
+                return lhs.lng < rhs.lng;
+                    });
             min_lon_ = left_it->lng;
             const double max_lon = right_it->lng;
 
-            const auto [bottom_it, top_it] = std::minmax_element(
-                points_begin, points_end,
-                [](auto lhs, auto rhs) { return lhs.lat < rhs.lat; });
+            const auto [bottom_it, top_it]
+                = std::minmax_element(points_begin, points_end, [](auto lhs, auto rhs) {
+                return lhs.lat < rhs.lat;
+                    });
             const double min_lat = bottom_it->lat;
             max_lat_ = top_it->lat;
 
@@ -56,12 +98,7 @@ namespace renderer {
             }
         }
 
-        svg::Point operator()(geo::Coordinates coords) const {
-            return {
-                (coords.lng - min_lon_) * zoom_coeff_ + padding_,
-                (max_lat_ - coords.lat) * zoom_coeff_ + padding_
-            };
-        }
+        svg::Point operator()(geo::Coordinates coords) const;
 
     private:
         double padding_;
@@ -70,36 +107,4 @@ namespace renderer {
         double zoom_coeff_ = 0;
     };
 
-    struct RenderSettings {
-        double width = 0.0;
-        double height = 0.0;
-        double padding = 0.0;
-        double stop_radius = 0.0;
-        double line_width = 0.0;
-        int bus_label_font_size = 0;
-        svg::Point bus_label_offset = { 0.0, 0.0 };
-        int stop_label_font_size = 0;
-        svg::Point stop_label_offset = { 0.0, 0.0 };
-        svg::Color underlayer_color = { svg::NoneColor };
-        double underlayer_width = 0.0;
-        std::vector<svg::Color> color_palette{};
-    };
-
-    class MapRenderer {
-    public:
-        MapRenderer(const RenderSettings& render_settings)
-            : render_settings_(render_settings)
-        {}
-
-        std::vector<svg::Polyline> RouteLines(const std::map<std::string_view, const domain::Bus*>&, const SphereProjector&) const;
-        std::vector<svg::Text> BusLabel(const std::map<std::string_view, const domain::Bus*>&, const SphereProjector&) const;
-        std::vector<svg::Circle> StopsSymbols(const std::map<std::string_view, const domain::Stop*>&, const SphereProjector&) const;
-        std::vector<svg::Text> StopsLabels(const std::map<std::string_view, const domain::Stop*>&, const SphereProjector&) const;
-
-        svg::Document SVG(const std::map<std::string_view, const domain::Bus*>&) const;
-
-    private:
-        const RenderSettings render_settings_;
-    };
-
-}
+} // namespace renderer
